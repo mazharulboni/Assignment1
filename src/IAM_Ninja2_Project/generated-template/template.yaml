@@ -1,0 +1,88 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description:
+  Create IAM Users.
+
+Resources:
+  RandomStringCustomResource:
+    Type: "Custom::RandomString"
+    Properties:
+      length: 25
+      ServiceToken: !ImportValue RandomizerLambdaArnB2301 # Importing value exported by another cloudformation template
+
+  StudentsReadOnlyGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: StudentsReadOnlyGroup
+#      Policies:
+#        - Policy
+
+  StudentsReadOnlyPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: '*'
+            Resource: '*'
+      PolicyName: StudentsReadOnlyPolicy
+
+
+  StudentStudentOne:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: !GetAtt RandomStringCustomResource.RandomString
+        PasswordResetRequired: true
+      UserName: StudentStudentOne
+
+  StudentStudentTwo:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: !GetAtt RandomStringCustomResource.RandomString
+        PasswordResetRequired: true
+      UserName: StudentStudentTwo
+
+  StudentStudentThree:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: !GetAtt RandomStringCustomResource.RandomString
+        PasswordResetRequired: true
+      UserName: StudentStudentThree
+
+  StudentStudentFour:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: !GetAtt RandomStringCustomResource.RandomString
+        PasswordResetRequired: true
+      UserName: StudentStudentFour
+
+  StudentStudentFive:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: !GetAtt RandomStringCustomResource.RandomString
+        PasswordResetRequired: true
+      UserName: StudentStudentFive
+     
+
+Outputs:
+ RandomString:
+    Description: RandomString Value
+    Value: !GetAtt RandomStringCustomResource.RandomString
