@@ -1,0 +1,40 @@
+  #Create a CFN template that specifies an IAM Role.
+   #1. Provide values only for required attributes.
+   #2. Using inline Policies, give the Role read-only access to all IAM resources.
+   #3. Create the Stack.
+   #4. Use the awscli to query the IAM service twice:
+        #4.1 List all the Roles
+        #4.2 Describe the specific Role your Stack created.
+
+Resources:
+  MyIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: InRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: MyIAMReadOnlyPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:List*
+                  - iam:Get*
+                  - iam:GenerateCredentialReport
+                  - iam:GenerateServiceLastAccessedDetails
+                  - iam:SimulateCustomPolicy
+                  - iam:SimulatePrincipalPolicy
+                Resource: "*"
+# aws cloudformation validate-template --template-body file://3.1.1_IAM_InlinePolicy.yaml
+# aws cloudformation create-change-set --stack-name iam311 --change-set-name inline-iam-readonly --change-set-type CREATE --template-body file://3.1.1_IAM_InlinePolicy.yaml
+# aws cloudformation create-stack --stack-name iam311 --template-body file://3.1.1_IAM_InlinePolicy.yaml --capabilities CAPABILITY_NAMED_IAM
+
+#list roles - aws iam list-roles
+#get role - aws iam get-role --role-name InRole

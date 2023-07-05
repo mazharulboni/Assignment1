@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description:
+  Create IAM Users.
+
+# 1. IAM Uer Group
+# 2. IAM Users
+# 3. Policies - Attach Policies to the group
+# Problems
+# 1. Generate Password Programmatically - CloudFormation Custom Resources
+# 2. Reduce redundant or repetitive code
+
+Resources:
+
+  StudentsReadOnlyGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: StudentsReadOnlyGroup
+  #      Policies:
+  #        - Policy
+
+  StudentsReadOnlyPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: '*'
+            Resource: '*'
+      PolicyName: StudentsReadOnlyPolicy
+
+  StudentJohn:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: john6123#
+        PasswordResetRequired: true
+      UserName: StudentJohn
+
+  StudentDohn:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: dohn6123#
+        PasswordResetRequired: true
+      UserName: StudentDohn
+
+  StudentMon:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref StudentsReadOnlyGroup
+      LoginProfile:
+        Password: mon6123#
+        PasswordResetRequired: true
+      UserName: StudentMon

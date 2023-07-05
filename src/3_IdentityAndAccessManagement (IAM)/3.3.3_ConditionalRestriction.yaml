@@ -1,0 +1,68 @@
+Resources:
+  # MyIamBucket1015:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     BucketName: iambucket1015
+  MyIamBucket4015:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: iambucket4015
+
+  # S3FullAccessPolicy:
+  #   Type: "AWS::IAM::ManagedPolicy"
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Action:
+  #             - s3:*
+  #             - s3:PutObject
+  #           Resource:
+  #             - !Sub "arn:aws:s3:::${MyIamBucket1015}"
+  #             - !Sub "arn:aws:s3:::${MyIamBucket1015}/*"
+
+  S3ReadAccessPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource: !Sub "arn:aws:s3:::${MyIamBucket4015}"
+            Condition:
+              StringLike:
+                "s3:prefix": "lebowski"
+
+  MyIAMRole501:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MyS3Role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        # - !Ref S3FullAccessPolicy
+        - !Ref S3ReadAccessPolicy
+
+Outputs:
+  myrole101:
+    Value: !GetAtt MyIAMRole501.Arn
+  mybucket:
+    Value: !GetAtt MyIamBucket4015.Arn
+# aws cloudformation validate-template --template-body file://IAM_ROLE_3.1.1.yaml
+# aws cloudformation create-change-set --stack-name myrole101 --change-set-name first-change-set101 --change-set-type UPDATE --template-body file://IAM_ROLE_3.1.2_custompolicy.yaml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-stack --stack-name myrole101 --template-body file://IAM_ROLE_3.1.1.yaml --capabilities CAPABILITY_NAMED_IAM
+
+#list roles - aws iam list-roles
+#get role - aws iam get-role --role-name MyRole
+#aws cloudformation describe-stacks --stack-name myrole101
+
+#aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::YOUR_ACCOUNT_ID:role/Role1 --action-names "iam:CreateRole" "iam:ListRoles" "iam:SimulatePrincipalPolicy" "ec2:DescribeImages" "ec2:RunInstances" "ec2:DescribeSecurityGroups"
+#aws cloudformation create-stack --stack-name TrustPolicy --template-body file://TrustPolicy_3.2.1.yaml --capabilities CAPABILITY_NAMED_IAM

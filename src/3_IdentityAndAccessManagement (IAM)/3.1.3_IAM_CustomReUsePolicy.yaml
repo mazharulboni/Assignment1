@@ -1,0 +1,51 @@
+Resources:
+  IamReadOnlyPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - iam:List*
+              - iam:Get*
+              - iam:GenerateCredentialReport
+              - iam:GenerateServiceLastAccessedDetails
+              - iam:SimulateCustomPolicy
+              - iam:SimulatePrincipalPolicy
+            Resource: "*"
+
+  MyIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MyFirstRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Ref IamReadOnlyPolicy
+
+  MyIAMRole2:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MySecondRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Ref IamReadOnlyPolicy
+# aws cloudformation validate-template --template-body file://IAM_ROLE_3.1.1.yaml
+# aws cloudformation create-change-set --stack-name myrole --change-set-name first-change-set --change-set-type UPDATE --template-body file://IAM_ROLE_3.1.2_custompolicy.yaml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-stack --stack-name myrole --template-body file://IAM_ROLE_3.1.1.yaml --capabilities CAPABILITY_NAMED_IAM
+
+#list roles - aws iam list-roles
+#get role - aws iam get-role --role-name MyRole
+#aws cloudformation describe-stacks --stack-name myrole

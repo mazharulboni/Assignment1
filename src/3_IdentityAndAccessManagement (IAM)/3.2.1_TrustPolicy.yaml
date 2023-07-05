@@ -1,0 +1,28 @@
+Resources:
+  MyIAMRole302:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MyThirdRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::199055471403:user/ala
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+
+Outputs:
+  MyFirstRole:
+    Value: !GetAtt MyIAMRole302.Arn
+# aws cloudformation validate-template --template-body file://IAM_ROLE_3.1.1.yaml
+# aws cloudformation create-change-set --stack-name myrole101 --change-set-name first-change-set101 --change-set-type UPDATE --template-body file://IAM_ROLE_3.1.2_custompolicy.yaml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-stack --stack-name myrole101 --template-body file://IAM_ROLE_3.1.1.yaml --capabilities CAPABILITY_NAMED_IAM
+
+#list roles - aws iam list-roles
+#get role - aws iam get-role --role-name MyRole
+#aws cloudformation describe-stacks --stack-name myrole101
+
+#aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::YOUR_ACCOUNT_ID:role/Role1 --action-names "iam:CreateRole" "iam:ListRoles" "iam:SimulatePrincipalPolicy" "ec2:DescribeImages" "ec2:RunInstances" "ec2:DescribeSecurityGroups"
+#aws cloudformation create-stack --stack-name TrustPolicy --template-body file://3.2.1_TrustPolicy.yaml --capabilities CAPABILITY_NAMED_IAM

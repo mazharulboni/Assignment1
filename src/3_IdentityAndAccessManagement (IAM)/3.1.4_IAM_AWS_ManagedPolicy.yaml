@@ -1,0 +1,42 @@
+Resources:
+  MyIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MyFirstRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+
+  MyIAMRole2:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MySecondRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+Outputs:
+  MyFirstRole:
+    Value: !GetAtt MyIAMRole.Arn
+  MySecondRole:
+    Value: !GetAtt MyIAMRole2.Arn
+# aws cloudformation validate-template --template-body file://IAM_ROLE_3.1.1.yaml
+# aws cloudformation create-change-set --stack-name MyFirstRole --change-set-name first-change-set101 --change-set-type UPDATE --template-body file://IAM_ROLE_3.1.2_custompolicy.yaml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-stack --stack-name MyFirstRole --template-body file://IAM_ROLE_3.1.1.yaml --capabilities CAPABILITY_NAMED_IAM
+
+#list roles - aws iam list-roles
+#get role - aws iam get-role --role-name MyRole
+#aws cloudformation describe-stacks --stack-name MyFirstRole
+
+#aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::YOUR_ACCOUNT_ID:role/Role1 --action-names "iam:CreateRole" "iam:ListRoles" "iam:SimulatePrincipalPolicy" "ec2:DescribeImages" "ec2:RunInstances" "ec2:DescribeSecurityGroups"

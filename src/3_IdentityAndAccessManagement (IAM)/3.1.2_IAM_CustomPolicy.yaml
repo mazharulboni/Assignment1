@@ -1,0 +1,42 @@
+#Update the template and the corresponding Stack to make the IAM Role's inline policy more generally usable:
+  #1. Convert the IAM Role's inline Policies array to a separate customer managed policy resource.
+  #2. Attach the new resource to the IAM Role.
+  #3. Update the Stack using the modified template.
+
+Resources:
+  IamReadOnlyPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - iam:List*
+              - iam:Get*
+              - iam:GenerateCredentialReport
+              - iam:GenerateServiceLastAccessedDetails
+              - iam:SimulateCustomPolicy
+              - iam:SimulatePrincipalPolicy
+            Resource: "*"
+
+  MyIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CustomRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Ref IamReadOnlyPolicy
+
+# aws cloudformation validate-template --template-body file://3.1.2_IAM_CustomPolicy.yaml
+# aws cloudformation create-change-set --stack-name customer-iam-policy --change-set-name first-change --change-set-type UPDATE --template-body file://3.1.2_IAM_CustomPolicy.yaml --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation create-stack --stack-name myrole101 --template-body file://3.1.2_IAM_CustomPolicy.yaml --capabilities CAPABILITY_NAMED_IAM
+
+#list roles - aws iam list-roles
+#get role - aws iam get-role --role-name CustomRole

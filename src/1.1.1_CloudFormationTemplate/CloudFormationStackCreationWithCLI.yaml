@@ -1,0 +1,29 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description:
+  Mazharul DevOps CloudFormation Class
+
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    #DeletionPolicy: Retain
+    Properties:
+      BucketName: Mazharul_DevOps_CloudFormation_Test_Bucket
+
+Outputs:
+  BucketName:
+    Description: Bucket Name
+    Value: !Ref S3Bucket
+  BucketArn:
+    Description: Bucket Arn
+    Value: S3Bucket.Arn
+#    Export:
+#      Name: Name of resource to export
+# aws cloudformation create-stack --stack-name b2301-demo-stack --template-body file://cloudformation-anatomy.yaml
+# aws cloudformation create-stack --stack-name b2301-demo-stack --template-body file://cloudformation-anatomy.yaml
+
+# aws cloudformation create-change-set
+  #--stack-name Mazharul_DevOps_CloudFormation_Test_Bucket
+  #--change-set-name first-change-set
+  #--change-set-type CREATE --template-body file://CloudFormationStackCreationWithCLI.yaml

@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: B2301 DevOps Cloudformation Class
+
+Resources:
+  S3Bucket:
+    Type: "AWS::S3::Bucket"
+    #DeletionPolicy: Retain
+    Properties:
+      BucketName: mazharulthirdbucket
+
+Outputs:
+  BucketName:
+    Description: Bucket Name
+    Value: !Ref S3Bucket
+  BucketArn:
+    Description: Bucket Arn
+    Value: S3Bucket.Arn
+#    Export:
+#      Name: Name of resource to export
+
+# aws cloudformation create-stack --stack-name b2301-demo-stack --template-body file://cloudformation-anatomy.yaml
